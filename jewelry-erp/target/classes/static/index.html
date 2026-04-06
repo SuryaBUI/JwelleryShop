@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jewelry ERP</title>
+<style>
+
+/* ===== GLOBAL ===== */
+body {
+	margin: 0;
+	font-family: "Segoe UI", Arial;
+	background: #f4f6f9;
+}
+
+/* ===== LAYOUT ===== */
+.app-container {
+	display: flex;
+	height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+	width: 220px;
+	background: #1e293b;
+	color: white;
+	padding: 20px;
+}
+
+.sidebar h2 {
+	margin-bottom: 20px;
+	font-size: 18px;
+}
+
+.sidebar button {
+	width: 100%;
+	margin-bottom: 10px;
+	background: #334155;
+}
+
+.sidebar button:hover {
+	background: #475569;
+}
+
+/* ===== MAIN ===== */
+.main {
+	flex: 1;
+	padding: 20px;
+	overflow-y: auto;
+}
+
+/* ===== HEADER ===== */
+.header {
+	background: white;
+	padding: 12px;
+	border-radius: 8px;
+	margin-bottom: 15px;
+	box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== CARD ===== */
+.card {
+	background: white;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 15px;
+}
+
+/* ===== FORM ===== */
+.form-group {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.form-group label {
+	width: 150px;
+	font-weight: bold;
+}
+
+.form-group input, .form-group select {
+	width: 250px; /* 🔥 controlled width */
+	padding: 6px;
+	border-radius: 6px;
+	border: 1px solid #ccc;
+}
+
+/* ===== BUTTON ===== */
+button {
+	padding: 6px 12px;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	background: #2563eb;
+	color: white;
+}
+
+button:hover {
+	background: #1d4ed8;
+}
+
+button:disabled {
+	background: gray;
+}
+
+/* ===== TABLE ===== */
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 10px;
+}
+
+th {
+	background: #2563eb;
+	color: white;
+	padding: 10px;
+}
+
+td {
+	padding: 8px;
+	border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+	background: #f1f5f9;
+}
+
+/* ===== FILTER ===== */
+.filter-box input {
+	width: 150px;
+	margin-right: 10px;
+}
+
+/* ===== STATUS COLORS ===== */
+.active {
+	color: green;
+	font-weight: bold;
+}
+
+.closed {
+	color: red;
+	font-weight: bold;
+}
+
+/* ===== RESPONSIVE ===== */
+@media ( max-width : 768px) {
+	.form-group {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	.form-group input {
+		width: 100%;
+	}
+	.sidebar {
+		display: none;
+	}
+}
+</style>
+</head>
+<body>
+<body>
+
+	<div class="app-container">
+
+		<!-- ===== SIDEBAR ===== -->
+		<div class="sidebar">
+			<h2>Shambhu Nath Sarraf Jewelry ERP</h2>
+
+			<button onclick="goHome()">Home</button>
+
+			<button id="btnSelling" onclick="startSelling()" disabled>New
+				Item</button>
+			<button id="btnOld" onclick="startOld()" disabled>Old Item</button>
+			<button id="btnBanki" onclick="startBanki()" disabled>Banki</button>
+		</div>
+
+		<!-- ===== MAIN ===== -->
+		<div class="main">
+
+			<!-- HEADER -->
+			<div class="header" id="selectedCustomerHeader"
+				style="display: none;">
+				<b id="selectedCustomerText"></b>
+			</div>
+
+			<!-- ===== CUSTOMER SELECTION ===== -->
+			<div id="customerSelection" class="card">
+				<h3>Select Customer</h3>
+
+				<div class="form-group">
+					<label>Customer</label> <select id="customerDropdown"></select>
+				</div>
+
+				<button onclick="selectCustomer()">Next</button>
+				<button onclick="showCreateCustomer()">Create New</button>
+			</div>
+
+			<!-- ===== CREATE CUSTOMER ===== -->
+			<div id="createCustomer" class="card" style="display: none;">
+				<h3>Create Customer</h3>
+
+				<div class="form-group">
+					<label>Name</label> <input id="cname">
+				</div>
+
+				<div class="form-group">
+					<label>Address</label> <input id="caddress">
+				</div>
+
+				<div class="form-group">
+					<label>Contact</label> <input id="ccontact">
+				</div>
+
+				<div class="form-group">
+					<label>Alternate</label> <input id="calternate">
+				</div>
+
+				<button onclick="createCustomer()">Save</button>
+				<button onclick="goHome()">Back</button>
+			</div>
+
+			<!-- ===== OPTIONS ===== -->
+			<div id="options" class="card" style="display: none;">
+				<h3>Choose Option</h3>
+
+				<button onclick="startSelling()">New Item</button>
+				<button onclick="startOld()">Old Item</button>
+				<button onclick="startBanki()">Banki</button>
+			</div>
+			<div id="step1" class="card" style="display: none;">
+				<h3>Selling - Step 1</h3>
+
+				<div class="form-group">
+					<label>Item Name</label> <input id="itemName">
+				</div>
+
+				<button onclick="step1()">Next</button>
+			</div>
+
+			<div id="step2" class="card" style="display: none;">
+				<h3>Step 2</h3>
+
+				<div class="form-group">
+					<label>Weight</label> <input id="weight">
+				</div>
+
+				<button onclick="step2()">Next</button>
+			</div>
+
+			<div id="step3" class="card" style="display: none;">
+				<h3>Step 3</h3>
+
+				<div class="form-group">
+					<label>Description</label> <input id="description">
+				</div>
+
+				<button onclick="step3()">Next</button>
+			</div>
+
+			<div id="step4" class="card" style="display: none;">
+				<h3>Step 4</h3>
+
+				<div class="form-group">
+					<label>Purity</label> <input id="purity">
+				</div>
+
+				<button onclick="step4()">Next</button>
+			</div>
+
+			<div id="step5" class="card" style="display: none;">
+				<h3>Step 5</h3>
+
+				<div class="form-group">
+					<label>Rate</label> <input id="rate">
+				</div>
+
+				<button onclick="step5()">Calculate</button>
+			</div>
+
+			<div id="result" class="card" style="display: none;">
+				<h3 id="price"></h3>
+
+				<button onclick="save()">Save</button>
+				<button onclick="discard()">Discard</button>
+			</div>
+
+			<div id="oldStep1" class="card" style="display: none;">
+				<h3>Old Item - Step 1</h3>
+				<label>Item Name</label> <input id="oldName">
+				<button onclick="oldStep1()">Next</button>
+			</div>
+
+			<div id="oldStep2" class="card" style="display: none;">
+				<h3>Step 2</h3>
+				<label>Weight</label> <input id="oldWeight">
+				<button onclick="oldStep2()">Next</button>
+			</div>
+
+			<div id="oldStep3" class="card" style="display: none;">
+				<h3>Step 3</h3>
+				<label>Description</label> <input id="oldDesc">
+				<button onclick="oldStep3()">Next</button>
+			</div>
+
+			<div id="oldStep4" class="card" style="display: none;">
+				<h3>Step 4</h3>
+				<label>Purity</label> <input id="oldPurity">
+				<button onclick="oldStep4()">Next</button>
+			</div>
+
+			<div id="oldStep5" class="card" style="display: none;">
+				<h3>Step 5</h3>
+				<label>Rate</label> <input id="oldRate">
+				<button onclick="oldStep5()">Calculate</button>
+			</div>
+
+			<div id="oldResult" class="card" style="display: none;">
+				<h3 id="oldPrice"></h3>
+
+				<button onclick="oldSave()">Save</button>
+				<button onclick="oldDiscard()">Discard</button>
+			</div>
+			<!-- MAPPING SECTION -->
+			<div id="mapSection" class="card" style="display: none;">
+				<h3>Map Old Item to Selling Item</h3>
+
+				<div class="form-group">
+					<label>Select Selling Item</label> <select id="sellingDropdown"></select>
+				</div>
+
+				<button onclick="confirmMap()">Confirm</button>
+				<button onclick="goHome()">Cancel</button>
+			</div>
+
+			<!-- FINAL DEAL -->
+			<div id="finalDeal" class="card" style="display: none;">
+				<h3>Final Deal</h3>
+
+				<div class="form-group">
+					<label>Deal Price</label>
+					<h2 id="dealPrice" style="font-weight: bold; margin: 0;"></h2>
+				</div>
+
+				<button onclick="goHome()">Done</button>
+			</div>
+
+
+
+			<!-- ===== BANKI CHOICE ===== -->
+			<div id="bankiChoice" class="card" style="display: none;">
+				<h3>Banki Option</h3>
+
+				<button onclick="newBanki()">New</button>
+				<button onclick="oldBanki()">Old</button>
+			</div>
+
+			<!-- ===== BANKI FORM ===== -->
+			<div id="bankiForm" class="card" style="display: none;">
+				<h3>New Banki Entry</h3>
+
+				<div class="form-group">
+					<label>Name</label> <input id="bname">
+				</div>
+
+				<div class="form-group">
+					<label>Address</label> <input id="baddress">
+				</div>
+
+				<div class="form-group">
+					<label>Amount</label> <input id="bamount">
+				</div>
+
+				<div class="form-group">
+					<label>Description</label> <input id="bdesc">
+				</div>
+
+				<div class="form-group">
+					<label>Weight</label> <input id="bweight">
+				</div>
+
+				<button onclick="saveBanki()">Save</button>
+				<button onclick="goHome()">Back</button>
+			</div>
+
+			<!-- ===== BANKI TABLE ===== -->
+			<div id="bankiTable" class="card" style="display: none;">
+
+				<h3>Banki Entries</h3>
+
+				<!-- FILTER -->
+				<div class="filter-box">
+					<input id="searchAmount" placeholder="Amount"
+						oninput="handleSearch()"> <input type="date"
+						id="startDate" onchange="handleDateFilter()"> <input
+						type="date" id="endDate" onchange="handleDateFilter()">
+					<button onclick="resetFilters()">Reset</button>
+				</div>
+
+				<!-- TABLE -->
+				<table>
+					<thead>
+						<tr>
+							<th>Amount</th>
+							<th>Date</th>
+							<th>Name</th>
+							<th>Description</th>
+							<th>Status</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody id="bankiBody"></tbody>
+				</table>
+
+				<br>
+
+				<button onclick="prevPage()">Prev</button>
+				<button onclick="nextPage()">Next</button>
+
+				<br> <br>
+				<button onclick="goHome()">Back to Home</button>
+			</div>
+
+		</div>
+		<!-- MAIN -->
+
+		<div id="receiptPanel" class="card"
+			style="width: 300px; border-left: 3px solid #2563eb; display: none; overflow-y: auto;">
+			<h3>Receipt</h3>
+
+			<table>
+				<tbody id="receiptBody"></tbody>
+			</table>
+
+			<br>
+			<button onclick="printReceipt()">🖨 Print</button>
+		</div>
+	</div>
+	<!-- APP -->
+
+</body>
+
+<script>
+
+let customerId;
+let customerName;
+let finalPriceValue = 0;
+let oldFinalPrice = 0;
+let searchAmount = null;
+let typingTimer;
+let startDate = null;
+let endDate = null;
+
+// 🔥 Load Customers
+window.onload = function() {
+    loadCustomers();
+};
+
+function handleDateFilter(){
+
+    startDate = document.getElementById("startDate").value;
+    endDate = document.getElementById("endDate").value;
+
+    // 🔥 only apply if both selected
+    if(startDate && endDate){
+        currentPage = 0;
+        loadBanki();
+    }
+}
+
+function resetFilters(){
+
+    // 🔥 Clear amount
+    document.getElementById("searchAmount").value = "";
+    searchAmount = null;
+
+    // 🔥 Clear date
+    document.getElementById("startDate").value = "";
+    document.getElementById("endDate").value = "";
+    startDate = null;
+    endDate = null;
+
+    // 🔥 Reset pagination
+    currentPage = 0;
+
+    // 🔥 Reload full data
+    loadBanki();
+}
+
+function handleSearch(){
+
+    clearTimeout(typingTimer);
+
+    typingTimer = setTimeout(() => {
+
+        let val = document.getElementById("searchAmount").value;
+
+        if(val === ""){
+            searchAmount = null;   // 🔥 reset
+        } else {
+            searchAmount = val;
+        }
+
+        currentPage = 0;  // reset pagination
+        loadBanki();
+
+    }, 400); // delay (ms)
+}
+
+function loadCustomers() {
+    fetch('/customer/all')
+    .then(res => res.json())
+    .then(data => {
+        let dropdown = document.getElementById("customerDropdown");
+        dropdown.innerHTML = '<option value="">-- Select Customer --</option>';
+
+        data.forEach(c => {
+            let option = document.createElement("option");
+            option.value = c.customerId;
+            option.text = c.name + " (ID: " + c.customerId + ")";
+            dropdown.add(option);
+        });
+    });
+}
+
+// ✅ Select Customer
+function selectCustomer() {
+    let dropdown = document.getElementById("customerDropdown");
+
+    if (!dropdown.value) {
+        alert("❌ Please select customer first");
+        return;
+    }
+
+    customerId = dropdown.value;
+    // 🔥 get selected name
+    let customerName = dropdown.options[dropdown.selectedIndex].text;
+
+    // store globally
+    window.selectedCustomerName = customerName;
+
+ // 🔥 show header
+    document.getElementById("selectedCustomerText").innerText =
+        "Customer: " + customerName;
+ 
+    document.getElementById("selectedCustomerHeader").style.display = "block";
+
+    // 🔥 ENABLE SIDEBAR
+    document.getElementById("btnSelling").disabled = false;
+    document.getElementById("btnOld").disabled = false;
+    document.getElementById("btnBanki").disabled = false;
+    
+    // move to next screen
+    document.getElementById("customerSelection").style.display = "none";
+    document.getElementById("options").style.display = "block";
+    
+}
+
+// ✅ Show Create Customer
+function showCreateCustomer() {
+    document.getElementById("customerSelection").style.display = "none";
+    document.getElementById("createCustomer").style.display = "block";
+}
+
+// ✅ Create Customer
+function createCustomer() {
+
+    if (!cname.value || !caddress.value || !ccontact.value) {
+        alert("❌ Name, Address, Contact are required");
+        return;
+    }
+
+    let data = {
+        name: cname.value,
+        address: caddress.value,
+        contactNumber: ccontact.value,
+        alternateNumber: calternate.value
+    };
+
+    fetch('/customer/create', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(async res => {
+
+        let text = await res.text();
+
+        if (!res.ok) {
+            throw new Error(text);   // ✅ now real message comes
+        }
+
+        return JSON.parse(text);
+    })
+    .then(c => {
+        alert("✅ Customer Created!");
+
+        loadCustomers();
+
+        customerId = c.customerId;
+        customerName = c.name;
+
+        document.getElementById("createCustomer").style.display = "none";
+        document.getElementById("customerSelection").style.display = "block";
+
+        document.getElementById("customerDropdown").value = c.customerId;
+    })
+    .catch(err => {
+        alert(err.message);   // 🔥 SHOW ERROR IN UI
+    });
+}
+
+// ✅ Option Selection
+function startSelling(){
+
+    if(!customerId){
+        alert("❌ Please select customer first");
+        return;
+    }
+
+    goHome(); // reset UI
+
+    document.getElementById("customerSelection").style.display = "none";
+    document.getElementById("selectedCustomerHeader").style.display = "block";
+
+    document.getElementById("step1").style.display = "block";
+}
+
+function comingSoon() {
+    alert("🚀 Coming Soon");
+}
+
+// SELLING FLOW
+
+function step1() {
+    fetch(`/flow/step1?customerId=${customerId}&itemName=${itemName.value}`, {method:'POST'});
+    document.getElementById("step1").style.display = "none";
+    document.getElementById("step2").style.display = "block";
+}
+
+function step2() {
+    fetch(`/flow/step2?customerId=${customerId}&weight=${weight.value}`, {method:'POST'});
+    document.getElementById("step2").style.display = "none";
+    document.getElementById("step3").style.display = "block";
+}
+
+function step3() {
+    fetch(`/flow/step3?customerId=${customerId}&description=${description.value}`, {method:'POST'});
+    document.getElementById("step3").style.display = "none";
+    document.getElementById("step4").style.display = "block";
+}
+
+function step4() {
+    fetch(`/flow/step4?customerId=${customerId}&purity=${purity.value}`, {method:'POST'});
+    document.getElementById("step4").style.display = "none";
+    document.getElementById("step5").style.display = "block";
+}
+
+function step5() {
+    fetch(`/flow/step5?customerId=${customerId}&ratePer10Gram=${rate.value}`, {method:'POST'})
+    .then(res => res.text())
+    .then(data => {
+        finalPriceValue = data;
+
+        document.getElementById("price").innerText = "Final Price: " + formatRupee(data);
+
+        document.getElementById("step5").style.display = "none";
+        document.getElementById("result").style.display = "block";
+    });
+}
+
+//START OLD FLOW
+function startSelling(){
+
+    if(!customerId){
+        alert("❌ Please select customer first");
+        return;
+    }
+
+    goHome(); // reset UI
+
+    document.getElementById("customerSelection").style.display = "none";
+    document.getElementById("selectedCustomerHeader").style.display = "block";
+
+    document.getElementById("step1").style.display = "block";
+}
+function oldStep1(){
+    fetch(`/oldflow/step1?customerId=${customerId}&itemName=${oldName.value}`,{method:'POST'})
+    .then(()=>{
+        document.getElementById("oldStep1").style.display="none";
+        document.getElementById("oldStep2").style.display="block";
+    });
+}
+
+function oldStep2(){
+    fetch(`/oldflow/step2?customerId=${customerId}&weight=${oldWeight.value}`,{method:'POST'})
+    .then(()=>{
+        document.getElementById("oldStep2").style.display="none";
+        document.getElementById("oldStep3").style.display="block";
+    });
+}
+
+function oldStep3(){
+    fetch(`/oldflow/step3?customerId=${customerId}&description=${oldDesc.value}`,{method:'POST'})
+    .then(()=>{
+        document.getElementById("oldStep3").style.display="none";
+        document.getElementById("oldStep4").style.display="block";
+    });
+}
+
+function oldStep4(){
+    fetch(`/oldflow/step4?customerId=${customerId}&purity=${oldPurity.value}`,{method:'POST'})
+    .then(()=>{
+        document.getElementById("oldStep4").style.display="none";
+        document.getElementById("oldStep5").style.display="block";
+    });
+}
+
+function oldStep5(){
+    fetch(`/oldflow/step5?customerId=${customerId}&ratePer10Gram=${oldRate.value}`,{method:'POST'})
+    .then(res=>res.text())
+    .then(data=>{
+        oldFinalPrice = data;
+
+        document.getElementById("oldPrice").innerText="Old Price: "+formatRupee(data);
+
+        document.getElementById("oldStep5").style.display="none";
+        document.getElementById("oldResult").style.display="block";
+    });
+}
+
+function goHome(){
+
+    // 🔥 HIDE ALL SCREENS (ONLY ONCE)
+    const sections = [
+        "createCustomer", "options",
+        "step1","step2","step3","step4","step5","result",
+        "oldStep1","oldStep2","oldStep3","oldStep4","oldStep5","oldResult",
+        "mapSection","finalDeal",
+        "bankiChoice","bankiForm","bankiTable"
+    ];
+
+    sections.forEach(id => {
+        let el = document.getElementById(id);
+        if(el) el.style.display = "none";
+    });
+
+    // 🔥 HIDE HEADER
+    document.getElementById("selectedCustomerHeader").style.display = "none";
+
+    // 🔥 SHOW HOME
+    document.getElementById("customerSelection").style.display = "block";
+
+ // 🔥 DISABLE SIDEBAR AGAIN
+    document.getElementById("btnSelling").disabled = true;
+    document.getElementById("btnOld").disabled = true;
+    document.getElementById("btnBanki").disabled = true;
+    // 🔥 reload customers
+    loadCustomers();
+}
+
+function oldSave(){
+
+    // show mapping options
+    fetch('/flow/today')
+    .then(res => {
+        if(!res.ok){
+            throw new Error("API not working");
+        }
+        return res.json();
+    })
+    .then(data => {
+
+        let dropdown = document.getElementById("sellingDropdown");
+        dropdown.innerHTML = "";
+
+        if(data.length === 0){
+            alert("❌ No selling items found for today");
+         // 🔥 show back button screen
+            document.getElementById("oldResult").style.display = "none";
+            document.getElementById("mapSection").style.display = "block";
+
+            return;
+        }
+        
+        data.forEach(s => {
+            let opt = document.createElement("option");
+            opt.value = s.sellingItemId;
+            opt.text = s.itemName + " (Price: " + formatRupee(s.price) + ")";
+            dropdown.add(opt);
+        });
+
+        document.getElementById("oldResult").style.display = "none";
+        document.getElementById("mapSection").style.display = "block";
+    }).catch(err => {
+        console.error(err);
+        alert("Error fetching selling items");
+    });
+}
+
+function oldDiscard(){
+    alert("❌ Old Item Discarded");
+    location.reload();
+}
+
+function startOld(){
+
+    if(!customerId){
+        alert("❌ Please select customer first");
+        return;
+    }
+
+    goHome(); // reset UI
+
+    document.getElementById("customerSelection").style.display = "none";
+    document.getElementById("selectedCustomerHeader").style.display = "block";
+
+    document.getElementById("oldStep1").style.display = "block";
+}
+
+function confirmMap(){
+
+    let sellingId = document.getElementById("sellingDropdown").value;
+
+    // STEP 1 → SAVE OLD ITEM WITH MAPPING
+    fetch(`/oldflow/final?customerId=${customerId}
+        &save=true
+        &finalPrice=${oldFinalPrice}
+        &sellingItemId=${sellingId}`, {method:'POST'})
+
+    .then(res => res.text())
+    .then(msg => {
+
+        alert(msg);
+
+        // STEP 2 → FINAL DEAL CALCULATION
+        fetch(`/oldflow/finalPrice?sellingId=${sellingId}&oldPrice=${oldFinalPrice}`)
+        .then(res => res.text())
+        .then(data => {
+
+            document.getElementById("dealPrice").innerText =
+                "Final Deal Price: " + formatRupee(data);
+
+            showReceipt({
+                customer: window.selectedCustomerName,
+                item: document.getElementById("oldName").value,
+                weight: document.getElementById("oldWeight").value,
+                desc: document.getElementById("oldDesc").value,
+                amount: oldFinalPrice,
+                rate: document.getElementById("oldRate").value
+            });
+            document.getElementById("finalDeal").style.display = "block";
+        });
+    });
+}
+
+
+function printReceipt(){
+
+    let content = document.getElementById("receiptPanel").innerHTML;
+
+    let win = window.open('', '', 'width=600,height=700');
+
+    win.document.write(`
+        <html>
+        <head>
+            <title>Receipt</title>
+        </head>
+        <body>
+            ${content}
+        </body>
+        </html>
+    `);
+
+    win.document.close();
+    win.print();
+}
+
+// FINAL ACTION
+
+function save() {
+
+    fetch(`/flow/final?customerId=${customerId}&save=true&finalPrice=${finalPriceValue}`, {method:'POST'})
+    .then(() => {
+
+        showReceipt({
+            customer: window.selectedCustomerName,
+            item: document.getElementById("itemName").value,
+            weight: document.getElementById("weight").value,
+            desc: document.getElementById("description").value,
+            amount: finalPriceValue,
+            rate: document.getElementById("rate").value
+        });
+
+        alert("✅ Saved Successfully!");
+    });
+}
+
+function discard() {
+    fetch(`/flow/final?customerId=${customerId}&save=false&finalPrice=${finalPriceValue}`, {method:'POST'});
+    alert("❌ Data Discarded");
+    location.reload();
+}
+// Banki function
+function startBanki(){
+
+    if(!customerId){
+        alert("❌ Please select customer first");
+        return;
+    }
+
+    goHome();
+
+    document.getElementById("customerSelection").style.display = "none";
+    document.getElementById("selectedCustomerHeader").style.display = "block";
+
+    document.getElementById("bankiChoice").style.display = "block";
+}
+
+function saveBanki(){
+
+    const amount = document.getElementById("bamount").value;
+    const desc = document.getElementById("bdesc").value;
+    const weight = document.getElementById("bweight").value;
+    const name = document.getElementById("bname").value;
+    const address = document.getElementById("baddress").value;
+
+    if(!amount || !desc || !weight){
+        alert("❌ Required fields missing");
+        return;
+    }
+
+    let data = {
+        customerId,
+        customerName: name,
+        address,
+        principalAmount: amount,
+        description: desc,
+        approxWeight: weight
+    };
+
+    fetch('/banki/save', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+        location.reload();
+    });
+}
+
+let currentPage = 0;
+
+function oldBanki(){
+    document.getElementById("bankiChoice").style.display = "none";
+    document.getElementById("bankiTable").style.display = "block";
+    document.getElementById("searchAmount").value = "";
+    searchAmount = null;
+    loadBanki();
+}
+
+function loadBanki(){
+
+    let url = `/banki/all?customerId=${customerId}&page=${currentPage}`;
+
+    if(searchAmount){
+        url += `&amount=${searchAmount}`;
+    }
+
+    if(startDate && endDate){
+        url += `&startDate=${startDate}&endDate=${endDate}`;
+    }
+    
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+
+        let tbody = document.getElementById("bankiBody");
+        tbody.innerHTML = "";
+
+        data.content.forEach(b => {
+
+            let status = b.active ? "✅ Active" : "❌ Closed";
+
+            let calculateBtn = b.active
+                ? `<button onclick="calculate(${b.bankiId})">Calculate</button>`
+                : `<button disabled style="background:gray;">Calculate</button>`;
+
+            let closeBtn = b.active
+                ? `<button onclick="closeBanki(${b.bankiId})">Close</button>`
+                : "Closed";
+
+            let addBtn = b.active
+                ? `<button onclick="addMore(${b.bankiId})">Add Amount</button>`
+                : `<button disabled style="background:gray;">Add Amount</button>`;
+
+            let row = `
+                <tr>
+                    <td>${formatRupee(b.principalAmount)}</td>
+                    <td>${b.bankiDate}</td>
+                    <td>${b.customerName}</td>
+                    <td>${b.description}</td>
+                    <td>${status}</td>
+                    <td>
+                        ${calculateBtn}
+                        ${closeBtn}
+                        ${addBtn}
+                    </td>
+                </tr>
+            `;
+
+            tbody.innerHTML += row;
+        });
+    });
+}
+
+function nextPage(){
+    currentPage++;
+    loadBanki();
+}
+
+function prevPage(){
+    if(currentPage > 0){
+        currentPage--;
+        loadBanki();
+    }
+}
+
+function addMore(bankiId){
+
+    let amount = prompt("Enter additional amount:");
+
+    if(!amount) return;
+
+    let data = {
+        customerId: customerId,
+        principalAmount: amount,
+        description: "Additional entry",
+        approxWeight: 0,
+        parentBankiId: bankiId
+    };
+
+    fetch('/banki/addAmount', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+        loadBanki();
+    });
+}
+
+function calculate(bankiId){
+
+    let rate = prompt("Enter Rate:");
+
+    if(!rate) return;
+
+    fetch('/banki/calculate', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+            bankiId: bankiId,
+            rate: rate
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        alert(
+            "Interest: " + formatRupee(data.interest) +
+            "\nTotal: " + formatRupee(data.totalAmount)
+        );
+    });
+}
+
+function closeBanki(bankiId){
+
+    if(!confirm("Are you sure you want to close this entry?")) return;
+
+    fetch(`/banki/close?bankiId=${bankiId}`, {
+        method: 'POST'
+    }).then(res => {
+        console.log("Response status:", res.status); // 🔥
+        return res.text();
+    })
+    .then(msg => {
+        console.log("Response:", msg); // 🔥
+        alert(msg);
+        loadBanki();
+    })
+    .catch(err => {
+        console.error("Error:", err);
+    });
+}
+
+function formatRupee(amount){
+    return "₹ " + Number(amount).toLocaleString("en-IN");
+}
+
+function newBanki(){
+    console.log("New Banki clicked"); // 🔥 debug
+
+    document.getElementById("bankiChoice").style.display = "none";
+    document.getElementById("bankiForm").style.display = "block";
+}
+
+function showReceipt(data){
+
+    let panel = document.getElementById("receiptPanel");
+    let body = document.getElementById("receiptBody");
+
+    panel.style.display = "block";
+
+    body.innerHTML = `
+        <tr><td><b>Customer</b></td><td>${data.customer}</td></tr>
+        <tr><td><b>Item</b></td><td>${data.item}</td></tr>
+        <tr><td><b>Weight</b></td><td>${data.weight}</td></tr>
+        <tr><td><b>Description</b></td><td>${data.desc}</td></tr>
+        <tr><td><b>Amount</b></td><td>${formatRupee(data.amount)}</td></tr>
+        <tr><td><b>Rate</b></td><td>${formatRupee(data.rate)}</td></tr>
+        <tr><td><b>Date</b></td><td>${new Date().toLocaleString()}</td></tr>
+    `;
+}
+</script>
+
+</body>
+</html>
